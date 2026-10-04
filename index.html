@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Bodega</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <meta name="theme-color" content="#1e293b">
+    <style>
+        @media (max-width: 640px) {
+            .hide-mobile {
+                display: none;
+            }
+        }
+        /* Transiciones suaves */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-slate-900 min-h-screen">
+    <div id="app" class="max-w-6xl mx-auto bg-white dark:bg-slate-800 min-h-screen shadow-2xl">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-slate-800 dark:to-slate-900 text-white p-4 md:p-6 sticky top-0 z-50 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold">Mi Bodega</h1>
+                        <span class="text-xs md:text-sm opacity-90">Sistema simple</span>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur transition" title="Cambiar tema">
+                    <svg id="theme-icon-sun" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg id="theme-icon-moon" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+                <button onclick="showDataModal()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur transition" title="Gestionar datos">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navegación -->
+        <nav class="bg-blue-500 dark:bg-slate-700 text-white p-2 md:p-4 overflow-x-auto shadow-md">
+            <div class="flex gap-2 min-w-max justify-center md:justify-start">
+                <button onclick="showPage('inicio')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg bg-blue-700 dark:bg-slate-600 hover:bg-blue-800 dark:hover:bg-slate-500 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="inicio">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="hide-mobile">Inicio</span>
+                </button>
+                <button onclick="showPage('vender')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-slate-600 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="vender">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="hide-mobile">Vender</span>
+                </button>
+                <button onclick="showPage('productos')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-slate-600 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="productos">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    <span class="hide-mobile">Productos</span>
+                </button>
+                <button onclick="showPage('inventario')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-slate-600 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="inventario">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    <span class="hide-mobile">Inventario</span>
+                </button>
+                <button onclick="showPage('compras')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-slate-600 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="compras">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="hide-mobile">Compras</span>
+                </button>
+                <button onclick="showPage('proveedores')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-slate-600 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="proveedores">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="hide-mobile">Proveedores</span>
+                </button>
+                <button onclick="showPage('ganancias')" class="nav-btn px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 dark:hover:bg-slate-600 transition font-medium text-sm md:text-base flex items-center gap-2" data-page="ganancias">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="hide-mobile">Ganancias</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="p-4 md:p-6 lg:p-8">
+            <!-- Página: Inicio -->
+            <div id="page-inicio" class="page">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Inicio</h2>
+                
+                <!-- Resumen de hoy -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 border border-green-200 dark:border-green-700 p-4 md:p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Ventas de hoy</p>
+                        </div>
+                        <p class="text-2xl md:text-3xl font-bold text-green-700 dark:text-green-400" id="home-sales-today">S/ 0.00</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-200 dark:border-blue-700 p-4 md:p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Ganancia de hoy</p>
+                        </div>
+                        <p class="text-2xl md:text-3xl font-bold text-blue-700 dark:text-blue-400" id="home-profit-today">S/ 0.00</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 border border-purple-200 dark:border-purple-700 p-4 md:p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Productos vendidos hoy</p>
+                        </div>
+                        <p class="text-2xl md:text-3xl font-bold text-purple-700 dark:text-purple-400" id="home-items-today">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 border border-orange-200 dark:border-orange-700 p-4 md:p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Productos por reponer</p>
+                        </div>
+                        <p class="text-2xl md:text-3xl font-bold text-orange-700 dark:text-orange-400" id="home-low-stock">0</p>
+                    </div>
+                </div>
+
+                <!-- Resumen del mes -->
+                <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-4 md:p-6 rounded-xl mb-6 shadow-sm">
+                    <h3 class="text-lg md:text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Cómo va el mes
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div class="bg-white dark:bg-slate-600 p-4 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Ventas del mes</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white" id="home-sales-month">S/ 0.00</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-600 p-4 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Ganancia del mes</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white" id="home-profit-month">S/ 0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje de bienvenida -->
+                <div id="home-welcome" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700 p-4 md:p-6 rounded-xl text-center shadow-sm">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-200 text-base md:text-lg">
+                            <strong class="text-gray-800 dark:text-white">Bienvenida a tu sistema de bodega</strong><br>
+                            <span class="text-sm md:text-base">Empieza registrando tus productos en la sección "Productos".</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página: Vender -->
+            <div id="page-vender" class="page hidden">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Vender</h2>
+                
+                <!-- Tabs para tipo de venta -->
+                <div class="flex gap-2 mb-6">
+                    <button onclick="switchSaleTab('products')" class="sale-tab flex-1 px-4 py-3 rounded-lg bg-blue-600 text-white font-medium transition" data-tab="products">
+                        Productos
+                    </button>
+                    <button onclick="switchSaleTab('services')" class="sale-tab flex-1 px-4 py-3 rounded-lg bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white font-medium transition" data-tab="services">
+                        Servicios (Impresiones)
+                    </button>
+                </div>
+
+                <!-- Venta de productos -->
+                <div id="sale-products" class="sale-content">
+                    <!-- Buscador de productos -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Buscar producto</label>
+                        <input type="text" id="product-search" oninput="searchProducts()" class="w-full px-4 py-3 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escribe el nombre del producto...">
+                    </div>
+
+                    <!-- Resultados de búsqueda -->
+                    <div id="search-results" class="space-y-2 mb-6 max-h-64 overflow-y-auto">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+
+                    <!-- Carrito de venta -->
+                    <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 mb-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-4">Carrito de venta</h3>
+                        <div id="sale-cart" class="space-y-3 mb-4">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                        <div id="cart-empty" class="text-center text-gray-500 dark:text-gray-400 py-4">
+                            El carrito está vacío
+                        </div>
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-4 mb-6">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">Subtotal</p>
+                                <p class="text-xl font-bold text-gray-800 dark:text-white" id="sale-subtotal">S/ 0.00</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">Ganancia estimada</p>
+                                <p class="text-xl font-bold text-green-600 dark:text-green-400" id="sale-profit">S/ 0.00</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-300 dark:border-slate-500 pt-4">
+                            <div class="flex justify-between items-center">
+                                <p class="text-lg font-semibold text-gray-800 dark:text-white">Total</p>
+                                <p class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="sale-total">S/ 0.00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón registrar venta -->
+                    <button onclick="registerSale()" class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-md flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Registrar venta
+                    </button>
+                </div>
+
+                <!-- Venta de servicios (impresiones) -->
+                <div id="sale-services" class="sale-content hidden">
+                    <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-4">Registrar servicio de impresiones</h3>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descripción del servicio</label>
+                            <input type="text" id="service-description" class="w-full px-4 py-3 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ej: Impresión de documentos">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Precio (S/)</label>
+                            <input type="number" id="service-price" step="0.01" min="0" class="w-full px-4 py-3 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Costo aproximado (S/)</label>
+                            <input type="number" id="service-cost" step="0.01" min="0" class="w-full px-4 py-3 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00">
+                        </div>
+
+                        <button onclick="registerService()" class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-md flex items-center justify-center gap-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Registrar servicio
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página: Productos -->
+            <div id="page-productos" class="page hidden">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Productos</h2>
+                
+                <!-- Botón agregar producto -->
+                <button onclick="showProductForm()" class="mb-6 w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Agregar producto
+                </button>
+
+                <!-- Formulario de producto (oculto por defecto) -->
+                <div id="product-form" class="hidden bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-4 md:p-6 rounded-xl mb-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white" id="product-form-title">Nuevo producto</h3>
+                    <form onsubmit="saveProduct(event)">
+                        <input type="hidden" id="product-id">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre del producto *</label>
+                                <input type="text" id="product-name" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ej: Chicles">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoría</label>
+                                <select id="product-category" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Chicles">Chicles</option>
+                                    <option value="Snacks">Snacks</option>
+                                    <option value="Confitería">Confitería</option>
+                                    <option value="Gaseosas">Gaseosas</option>
+                                    <option value="Agua">Agua</option>
+                                    <option value="Helados">Helados</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Precio de compra (S/) *</label>
+                                <input type="number" id="product-cost" required step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Precio de venta (S/) *</label>
+                                <input type="number" id="product-price" required step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cantidad actual *</label>
+                                <input type="number" id="product-stock" required min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock mínimo</label>
+                                <input type="number" id="product-min-stock" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="5">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Proveedor</label>
+                                <select id="product-supplier" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                                Guardar
+                            </button>
+                            <button type="button" onclick="hideProductForm()" class="flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-slate-600 dark:hover:bg-slate-500 text-gray-800 dark:text-white px-6 py-2 rounded-lg font-medium transition">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de productos -->
+                <div id="products-list" class="space-y-3">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Estado vacío -->
+                <div id="products-empty" class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-8 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">No tienes productos registrados</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Haz clic en "Agregar producto" para empezar</p>
+                </div>
+            </div>
+
+            <!-- Página: Inventario -->
+            <div id="page-inventario" class="page hidden">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Inventario</h2>
+                
+                <!-- Filtros rápidos -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button onclick="filterInventory('all')" class="inventory-filter px-4 py-2 rounded-lg bg-blue-600 text-white font-medium text-sm transition" data-filter="all">
+                        Todos
+                    </button>
+                    <button onclick="filterInventory('low')" class="inventory-filter px-4 py-2 rounded-lg bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white font-medium text-sm hover:bg-gray-300 dark:hover:bg-slate-500 transition" data-filter="low">
+                        Pocos productos
+                    </button>
+                    <button onclick="filterInventory('out')" class="inventory-filter px-4 py-2 rounded-lg bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white font-medium text-sm hover:bg-gray-300 dark:hover:bg-slate-500 transition" data-filter="out">
+                        Agotados
+                    </button>
+                </div>
+
+                <!-- Lista de inventario -->
+                <div id="inventory-list" class="space-y-3">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Estado vacío -->
+                <div id="inventory-empty" class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-8 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">No hay productos en el inventario</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Registra productos en la sección "Productos"</p>
+                </div>
+            </div>
+
+            <!-- Página: Compras -->
+            <div id="page-compras" class="page hidden">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Compras</h2>
+                
+                <!-- Botón registrar compra -->
+                <button onclick="showPurchaseForm()" class="mb-6 w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Registrar compra
+                </button>
+
+                <!-- Formulario de compra (oculto por defecto) -->
+                <div id="purchase-form" class="hidden bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-4 md:p-6 rounded-xl mb-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Nueva compra</h3>
+                    <form onsubmit="savePurchase(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Proveedor</label>
+                                <select id="purchase-supplier" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha</label>
+                                <input type="date" id="purchase-date" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Producto</label>
+                            <select id="purchase-product" onchange="updatePurchaseCost()" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Seleccionar...</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cantidad comprada *</label>
+                                <input type="number" id="purchase-quantity" required min="1" oninput="calculatePurchaseTotal()" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Precio unitario (S/) *</label>
+                                <input type="number" id="purchase-unit-price" required step="0.01" min="0" oninput="calculatePurchaseTotal()" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total (S/)</label>
+                                <input type="text" id="purchase-total" readonly class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-gray-100 dark:bg-slate-600 text-gray-800 dark:text-white font-bold" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                                Guardar compra
+                            </button>
+                            <button type="button" onclick="hidePurchaseForm()" class="flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-slate-600 dark:hover:bg-slate-500 text-gray-800 dark:text-white px-6 py-2 rounded-lg font-medium transition">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de compras -->
+                <div id="purchases-list" class="space-y-3">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Estado vacío -->
+                <div id="purchases-empty" class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-8 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">No hay compras registradas</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Haz clic en "Registrar compra" para empezar</p>
+                </div>
+            </div>
+
+            <!-- Página: Proveedores -->
+            <div id="page-proveedores" class="page hidden">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Proveedores</h2>
+                
+                <!-- Botón agregar proveedor -->
+                <button onclick="showSupplierForm()" class="mb-6 w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Agregar proveedor
+                </button>
+
+                <!-- Formulario de proveedor (oculto por defecto) -->
+                <div id="supplier-form" class="hidden bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-4 md:p-6 rounded-xl mb-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white" id="supplier-form-title">Nuevo proveedor</h3>
+                    <form onsubmit="saveSupplier(event)">
+                        <input type="hidden" id="supplier-id">
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre del proveedor *</label>
+                            <input type="text" id="supplier-name" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ej: Distribuidora Lima">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Teléfono</label>
+                            <input type="tel" id="supplier-phone" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ej: 999 123 456">
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                                Guardar
+                            </button>
+                            <button type="button" onclick="hideSupplierForm()" class="flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-slate-600 dark:hover:bg-slate-500 text-gray-800 dark:text-white px-6 py-2 rounded-lg font-medium transition">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de proveedores -->
+                <div id="suppliers-list" class="space-y-3">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Estado vacío -->
+                <div id="suppliers-empty" class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 p-8 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">No tienes proveedores registrados</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Haz clic en "Agregar proveedor" para empezar</p>
+                </div>
+            </div>
+
+            <!-- Página: Ganancias -->
+            <div id="page-ganancias" class="page hidden">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-white">Cómo va el negocio</h2>
+                
+                <!-- Período de tiempo -->
+                <div class="flex gap-2 mb-6">
+                    <button onclick="filterProfits('today')" class="profit-filter px-4 py-2 rounded-lg bg-blue-600 text-white font-medium transition" data-filter="today">
+                        Hoy
+                    </button>
+                    <button onclick="filterProfits('week')" class="profit-filter px-4 py-2 rounded-lg bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white font-medium transition" data-filter="week">
+                        Esta semana
+                    </button>
+                    <button onclick="filterProfits('month')" class="profit-filter px-4 py-2 rounded-lg bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white font-medium transition" data-filter="month">
+                        Este mes
+                    </button>
+                </div>
+
+                <!-- Resumen principal -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 border border-green-200 dark:border-green-700 p-4 md:p-6 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Ventas</p>
+                        <p class="text-2xl md:text-3xl font-bold text-green-700 dark:text-green-400" id="profit-sales">S/ 0.00</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-200 dark:border-blue-700 p-4 md:p-6 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Ganancia</p>
+                        <p class="text-2xl md:text-3xl font-bold text-blue-700 dark:text-blue-400" id="profit-profit">S/ 0.00</p>
+                    </div>
+                </div>
+
+                <!-- Productos destacados -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 md:p-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                            Más vendido
+                        </h3>
+                        <p class="text-lg font-medium text-gray-800 dark:text-white" id="profit-most-sold">-</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400" id="profit-most-sold-qty">0 unidades</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 md:p-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Más ganancia
+                        </h3>
+                        <p class="text-lg font-medium text-gray-800 dark:text-white" id="profit-most-profit">-</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400" id="profit-most-profit-amount">S/ 0.00</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 md:p-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                            </svg>
+                            Menos vendido
+                        </h3>
+                        <p class="text-lg font-medium text-gray-800 dark:text-white" id="profit-least-sold">-</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400" id="profit-least-sold-qty">0 unidades</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 md:p-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            Menos ganancia
+                        </h3>
+                        <p class="text-lg font-medium text-gray-800 dark:text-white" id="profit-least-profit">-</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400" id="profit-least-profit-amount">S/ 0.00</p>
+                    </div>
+                </div>
+
+                <!-- Días de venta -->
+                <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 md:p-6 mb-6">
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-4">Mejores días de venta</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white dark:bg-slate-600 p-4 rounded-lg">
+                            <p class="text-sm text-gray-500 dark:text-gray-300 mb-1">Día con más ventas</p>
+                            <p class="text-lg font-bold text-green-600 dark:text-green-400" id="profit-best-day">-</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300" id="profit-best-day-amount">S/ 0.00</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-600 p-4 rounded-lg">
+                            <p class="text-sm text-gray-500 dark:text-gray-300 mb-1">Día con menos ventas</p>
+                            <p class="text-lg font-bold text-red-600 dark:text-red-400" id="profit-worst-day">-</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300" id="profit-worst-day-amount">S/ 0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos por reponer -->
+                <div class="bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700 rounded-xl p-4 md:p-6 mb-6">
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        Productos por reponer
+                    </h3>
+                    <div id="low-stock-list" class="space-y-2">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <div id="low-stock-empty" class="text-center text-gray-500 dark:text-gray-400 py-4">
+                        Todos los productos tienen suficiente stock
+                    </div>
+                </div>
+
+                <!-- Comparación de proveedores -->
+                <div class="bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl p-4 md:p-6">
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        Proveedores más usados
+                    </h3>
+                    <div id="suppliers-ranking" class="space-y-2">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <div id="suppliers-ranking-empty" class="text-center text-gray-500 dark:text-gray-400 py-4">
+                        No hay compras registradas
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-200 dark:bg-slate-700 p-4 md:p-6 text-center text-sm text-gray-600 dark:text-gray-300">
+            <p>Sistema simple para bodegas pequeñas</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sistema de almacenamiento local
+        const Storage = {
+            get(key) {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            },
+            set(key, value) {
+                localStorage.setItem(key, JSON.stringify(value));
+            }
+        };
+
+        // Sistema de tema (dark/light)
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            Storage.set('theme', isDark ? 'dark' : 'light');
+        }
+
+        function loadTheme() {
+            const savedTheme = Storage.get('theme');
+            const html = document.documentElement;
+            
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+            } else if (savedTheme === 'dark') {
+                html.classList.add('dark');
+            } else {
+                // Por defecto dark mode
+                html.classList.add('dark');
+            }
+        }
+
+        // Navegación entre páginas
+        function showPage(pageName) {
+            // Ocultar todas las páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Mostrar la página seleccionada
+            document.getElementById(`page-${pageName}`).classList.remove('hidden');
+            
+            // Actualizar botones de navegación
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-700', 'dark:bg-slate-600');
+                if (btn.dataset.page === pageName) {
+                    btn.classList.add('bg-blue-700', 'dark:bg-slate-600');
+                }
+            });
+
+            // Cargar datos según la página
+            if (pageName === 'inicio') {
+                updateHomeStats();
+            } else if (pageName === 'productos') {
+                loadProducts();
+                updateSupplierSelect();
+            } else if (pageName === 'inventario') {
+                loadInventory();
+            } else if (pageName === 'proveedores') {
+                loadSuppliers();
+            } else if (pageName === 'compras') {
+                loadPurchases();
+                updateSupplierSelect();
+            } else if (pageName === 'vender') {
+                // Limpiar carrito al entrar
+                saleCart = [];
+                updateCartDisplay();
+            } else if (pageName === 'ganancias') {
+                loadProfits();
+            }
+        }
+
+        // Actualizar estadísticas del inicio
+        function updateHomeStats() {
+            const products = Storage.get('products') || [];
+            const sales = Storage.get('sales') || [];
+            
+            // Ocultar mensaje de bienvenida si hay datos
+            const welcome = document.getElementById('home-welcome');
+            if (products.length > 0 || sales.length > 0) {
+                welcome.classList.add('hidden');
+            } else {
+                welcome.classList.remove('hidden');
+            }
+            
+            // Productos por reponer
+            const lowStockCount = products.filter(p => p.stock <= (p.minStock || 0)).length;
+            document.getElementById('home-low-stock').textContent = lowStockCount;
+            
+            // Ventas de hoy
+            const today = new Date().toDateString();
+            const todaySales = sales.filter(s => new Date(s.date).toDateString() === today);
+            
+            const todayTotal = todaySales.reduce((sum, s) => sum + s.total, 0);
+            const todayProfit = todaySales.reduce((sum, s) => sum + s.profit, 0);
+            const todayItemsSold = todaySales.reduce((sum, s) => sum + s.items.reduce((isum, i) => isum + i.quantity, 0), 0);
+            
+            document.getElementById('home-sales-today').textContent = `S/ ${todayTotal.toFixed(2)}`;
+            document.getElementById('home-profit-today').textContent = `S/ ${todayProfit.toFixed(2)}`;
+            document.getElementById('home-items-today').textContent = todayItemsSold;
+            
+            // Ventas del mes
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthSales = sales.filter(s => new Date(s.date) >= monthStart);
+            
+            const monthTotal = monthSales.reduce((sum, s) => sum + s.total, 0);
+            const monthProfit = monthSales.reduce((sum, s) => sum + s.profit, 0);
+            
+            document.getElementById('home-sales-month').textContent = `S/ ${monthTotal.toFixed(2)}`;
+            document.getElementById('home-profit-month').textContent = `S/ ${monthProfit.toFixed(2)}`;
+        }
+
+        // ==================== PRODUCTOS ====================
+        
+        function showProductForm(productId = null) {
+            const form = document.getElementById('product-form');
+            const title = document.getElementById('product-form-title');
+            
+            // Limpiar formulario
+            document.getElementById('product-id').value = '';
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-category').value = '';
+            document.getElementById('product-cost').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-stock').value = '';
+            document.getElementById('product-min-stock').value = '';
+            document.getElementById('product-supplier').value = '';
+            
+            if (productId) {
+                // Editar producto existente
+                const products = Storage.get('products') || [];
+                const product = products.find(p => p.id === productId);
+                
+                if (product) {
+                    title.textContent = 'Editar producto';
+                    document.getElementById('product-id').value = product.id;
+                    document.getElementById('product-name').value = product.name;
+                    document.getElementById('product-category').value = product.category || '';
+                    document.getElementById('product-cost').value = product.cost;
+                    document.getElementById('product-price').value = product.price;
+                    document.getElementById('product-stock').value = product.stock;
+                    document.getElementById('product-min-stock').value = product.minStock || '';
+                    document.getElementById('product-supplier').value = product.supplierId || '';
+                }
+            } else {
+                title.textContent = 'Nuevo producto';
+            }
+            
+            form.classList.remove('hidden');
+        }
+
+        function hideProductForm() {
+            document.getElementById('product-form').classList.add('hidden');
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('product-id').value;
+            const name = document.getElementById('product-name').value.trim();
+            const category = document.getElementById('product-category').value;
+            const cost = parseFloat(document.getElementById('product-cost').value);
+            const price = parseFloat(document.getElementById('product-price').value);
+            const stock = Math.max(0, parseInt(document.getElementById('product-stock').value) || 0);
+            const minStock = Math.max(0, parseInt(document.getElementById('product-min-stock').value) || 0);
+            const supplierId = document.getElementById('product-supplier').value;
+            
+            let products = Storage.get('products') || [];
+            
+            if (id) {
+                // Editar producto existente
+                const index = products.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    products[index] = {
+                        ...products[index],
+                        name,
+                        category,
+                        cost,
+                        price,
+                        stock,
+                        minStock,
+                        supplierId,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+            } else {
+                // Nuevo producto
+                const newProduct = {
+                    id: Date.now().toString(),
+                    name,
+                    category,
+                    cost,
+                    price,
+                    stock,
+                    minStock,
+                    supplierId,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                products.push(newProduct);
+            }
+            
+            Storage.set('products', products);
+            hideProductForm();
+            loadProducts();
+            updateSupplierSelect();
+            updateHomeStats();
+            
+            alert(id ? 'Producto actualizado correctamente.' : 'Producto agregado correctamente.');
+        }
+
+        function loadProducts() {
+            const products = Storage.get('products') || [];
+            const list = document.getElementById('products-list');
+            const empty = document.getElementById('products-empty');
+            
+            if (products.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            
+            list.innerHTML = products.map(product => {
+                const profit = (product.price - product.cost).toFixed(2);
+                const stockStatus = getStockStatus(product.stock, product.minStock);
+                
+                return `
+                    <div class="bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800 dark:text-white text-lg">${product.name}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${product.category || 'Sin categoría'}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${stockStatus.class}">${stockStatus.text}</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mb-3">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Compra</p>
+                                <p class="font-medium text-gray-800 dark:text-white">S/ ${product.cost.toFixed(2)}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Venta</p>
+                                <p class="font-medium text-gray-800 dark:text-white">S/ ${product.price.toFixed(2)}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Ganancia</p>
+                                <p class="font-medium text-green-600 dark:text-green-400">S/ ${profit}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Stock</p>
+                                <p class="font-medium text-gray-800 dark:text-white">${product.stock}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="showProductForm('${product.id}')" class="flex-1 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-2 rounded-lg text-sm font-medium transition">
+                                Editar
+                            </button>
+                            <button onclick="deleteProduct('${product.id}')" class="flex-1 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 px-3 py-2 rounded-lg text-sm font-medium transition">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteProduct(productId) {
+            if (!confirm('¿Estás segura de que quieres eliminar este producto? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            let products = Storage.get('products') || [];
+            products = products.filter(p => p.id !== productId);
+            Storage.set('products', products);
+            
+            loadProducts();
+            updateSupplierSelect();
+            updateHomeStats();
+            
+            alert('Producto eliminado correctamente.');
+        }
+
+        function getStockStatus(stock, minStock) {
+            if (stock === 0) {
+                return { text: 'Agotado', class: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' };
+            } else if (stock <= minStock) {
+                return { text: 'Pocos', class: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' };
+            } else {
+                return { text: 'Suficiente', class: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' };
+            }
+        }
+
+        // ==================== INVENTARIO ====================
+        
+        let currentInventoryFilter = 'all';
+
+        function filterInventory(filter) {
+            currentInventoryFilter = filter;
+            
+            // Actualizar botones
+            document.querySelectorAll('.inventory-filter').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'dark:bg-slate-600', 'text-gray-800', 'dark:text-white');
+                
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-gray-200', 'dark:bg-slate-600', 'text-gray-800', 'dark:text-white');
+                }
+            });
+            
+            loadInventory();
+        }
+
+        function loadInventory() {
+            const products = Storage.get('products') || [];
+            const list = document.getElementById('inventory-list');
+            const empty = document.getElementById('inventory-empty');
+            
+            let filteredProducts = products;
+            
+            if (currentInventoryFilter === 'low') {
+                filteredProducts = products.filter(p => p.stock > 0 && p.stock <= (p.minStock || 0));
+            } else if (currentInventoryFilter === 'out') {
+                filteredProducts = products.filter(p => p.stock === 0);
+            }
+            
+            if (filteredProducts.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            
+            list.innerHTML = filteredProducts.map(product => {
+                const profit = (product.price - product.cost).toFixed(2);
+                const stockStatus = getStockStatus(product.stock, product.minStock);
+                
+                return `
+                    <div class="bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800 dark:text-white text-lg">${product.name}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${product.category || 'Sin categoría'}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${stockStatus.class}">${stockStatus.text}</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Cantidad</p>
+                                <p class="font-medium text-gray-800 dark:text-white">${product.stock}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Precio compra</p>
+                                <p class="font-medium text-gray-800 dark:text-white">S/ ${product.cost.toFixed(2)}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Precio venta</p>
+                                <p class="font-medium text-gray-800 dark:text-white">S/ ${product.price.toFixed(2)}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Ganancia/unidad</p>
+                                <p class="font-medium text-green-600 dark:text-green-400">S/ ${profit}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== PROVEEDORES ====================
+        
+        function showSupplierForm(supplierId = null) {
+            const form = document.getElementById('supplier-form');
+            const title = document.getElementById('supplier-form-title');
+            
+            // Limpiar formulario
+            document.getElementById('supplier-id').value = '';
+            document.getElementById('supplier-name').value = '';
+            document.getElementById('supplier-phone').value = '';
+            
+            if (supplierId) {
+                // Editar proveedor existente
+                const suppliers = Storage.get('suppliers') || [];
+                const supplier = suppliers.find(s => s.id === supplierId);
+                
+                if (supplier) {
+                    title.textContent = 'Editar proveedor';
+                    document.getElementById('supplier-id').value = supplier.id;
+                    document.getElementById('supplier-name').value = supplier.name;
+                    document.getElementById('supplier-phone').value = supplier.phone || '';
+                }
+            } else {
+                title.textContent = 'Nuevo proveedor';
+            }
+            
+            form.classList.remove('hidden');
+        }
+
+        function hideSupplierForm() {
+            document.getElementById('supplier-form').classList.add('hidden');
+        }
+
+        function saveSupplier(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('supplier-id').value;
+            const name = document.getElementById('supplier-name').value.trim();
+            const phone = document.getElementById('supplier-phone').value.trim();
+            
+            let suppliers = Storage.get('suppliers') || [];
+            
+            if (id) {
+                // Editar proveedor existente
+                const index = suppliers.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    suppliers[index] = {
+                        ...suppliers[index],
+                        name,
+                        phone,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+            } else {
+                // Nuevo proveedor
+                const newSupplier = {
+                    id: Date.now().toString(),
+                    name,
+                    phone,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                suppliers.push(newSupplier);
+            }
+            
+            Storage.set('suppliers', suppliers);
+            hideSupplierForm();
+            loadSuppliers();
+            
+            alert(id ? 'Proveedor actualizado correctamente.' : 'Proveedor agregado correctamente.');
+        }
+
+        function loadSuppliers() {
+            const suppliers = Storage.get('suppliers') || [];
+            const list = document.getElementById('suppliers-list');
+            const empty = document.getElementById('suppliers-empty');
+            
+            if (suppliers.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            
+            list.innerHTML = suppliers.map(supplier => {
+                return `
+                    <div class="bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800 dark:text-white text-lg">${supplier.name}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${supplier.phone || 'Sin teléfono'}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="showSupplierForm('${supplier.id}')" class="flex-1 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-2 rounded-lg text-sm font-medium transition">
+                                Editar
+                            </button>
+                            <button onclick="deleteSupplier('${supplier.id}')" class="flex-1 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 px-3 py-2 rounded-lg text-sm font-medium transition">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteSupplier(supplierId) {
+            if (!confirm('¿Estás segura de que quieres eliminar este proveedor? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            let suppliers = Storage.get('suppliers') || [];
+            suppliers = suppliers.filter(s => s.id !== supplierId);
+            Storage.set('suppliers', suppliers);
+            
+            loadSuppliers();
+            updateSupplierSelect();
+            
+            alert('Proveedor eliminado correctamente.');
+        }
+
+        function updateSupplierSelect() {
+            const suppliers = Storage.get('suppliers') || [];
+            const selects = [
+                document.getElementById('product-supplier'),
+                document.getElementById('purchase-supplier')
+            ];
+            
+            selects.forEach(select => {
+                if (!select) return;
+                
+                // Guardar selección actual
+                const currentValue = select.value;
+                
+                select.innerHTML = '<option value="">Seleccionar...</option>' + 
+                    suppliers.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                
+                // Restaurar selección si aún existe
+                if (suppliers.find(s => s.id === currentValue)) {
+                    select.value = currentValue;
+                }
+            });
+        }
+
+        function updateProductSelect() {
+            const products = Storage.get('products') || [];
+            const select = document.getElementById('purchase-product');
+            
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Seleccionar...</option>' + 
+                products.map(p => `<option value="${p.id}" data-cost="${p.cost}">${p.name}</option>`).join('');
+        }
+
+        // ==================== VENTAS ====================
+        
+        let saleCart = [];
+
+        function switchSaleTab(tab) {
+            // Actualizar botones
+            document.querySelectorAll('.sale-tab').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'dark:bg-slate-600', 'text-gray-800', 'dark:text-white');
+                
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-gray-200', 'dark:bg-slate-600', 'text-gray-800', 'dark:text-white');
+                }
+            });
+
+            // Mostrar contenido correspondiente
+            document.querySelectorAll('.sale-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            if (tab === 'products') {
+                document.getElementById('sale-products').classList.remove('hidden');
+            } else {
+                document.getElementById('sale-services').classList.remove('hidden');
+            }
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('product-search').value.toLowerCase();
+            const products = Storage.get('products') || [];
+            const results = document.getElementById('search-results');
+            
+            if (query.length < 2) {
+                results.innerHTML = '';
+                return;
+            }
+            
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(query) && 
+                p.stock > 0
+            );
+            
+            if (filtered.length === 0) {
+                results.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">No se encontraron productos</p>';
+                return;
+            }
+            
+            results.innerHTML = filtered.map(product => `
+                <div onclick="addToCart('${product.id}')" class="bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg p-3 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 transition">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium text-gray-800 dark:text-white">${product.name}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Stock: ${product.stock}</p>
+                        </div>
+                        <p class="font-bold text-blue-600 dark:text-blue-400">S/ ${product.price.toFixed(2)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(productId) {
+            const products = Storage.get('products') || [];
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) return;
+            
+            const existingItem = saleCart.find(item => item.productId === productId);
+            
+            if (existingItem) {
+                if (existingItem.quantity >= product.stock) {
+                    alert('No hay suficiente stock disponible');
+                    return;
+                }
+                existingItem.quantity += 1;
+            } else {
+                saleCart.push({
+                    productId,
+                    name: product.name,
+                    price: product.price,
+                    cost: product.cost,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+            document.getElementById('product-search').value = '';
+            document.getElementById('search-results').innerHTML = '';
+        }
+
+        function removeFromCart(productId) {
+            saleCart = saleCart.filter(item => item.productId !== productId);
+            updateCartDisplay();
+        }
+
+        function updateCartQuantity(productId, change) {
+            const products = Storage.get('products') || [];
+            const product = products.find(p => p.id === productId);
+            const item = saleCart.find(item => item.productId === productId);
+            
+            if (!item || !product) return;
+            
+            const newQuantity = item.quantity + change;
+            
+            if (newQuantity <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+            
+            if (newQuantity > product.stock) {
+                alert('No hay suficiente stock disponible');
+                return;
+            }
+            
+            item.quantity = newQuantity;
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('sale-cart');
+            const cartEmpty = document.getElementById('cart-empty');
+            
+            if (saleCart.length === 0) {
+                cartContainer.innerHTML = '';
+                cartEmpty.classList.remove('hidden');
+            } else {
+                cartEmpty.classList.add('hidden');
+                
+                cartContainer.innerHTML = saleCart.map(item => `
+                    <div class="flex justify-between items-center bg-white dark:bg-slate-600 rounded-lg p-3">
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800 dark:text-white">${item.name}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">S/ ${item.price.toFixed(2)} c/u</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="updateCartQuantity('${item.productId}', -1)" class="w-8 h-8 rounded bg-gray-200 dark:bg-slate-500 text-gray-800 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-slate-400 transition">-</button>
+                            <span class="w-8 text-center font-medium text-gray-800 dark:text-white">${item.quantity}</span>
+                            <button onclick="updateCartQuantity('${item.productId}', 1)" class="w-8 h-8 rounded bg-gray-200 dark:bg-slate-500 text-gray-800 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-slate-400 transition">+</button>
+                            <button onclick="removeFromCart('${item.productId}')" class="ml-2 text-red-500 hover:text-red-700 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateSaleTotals();
+        }
+
+        function updateSaleTotals() {
+            let subtotal = 0;
+            let totalCost = 0;
+            
+            saleCart.forEach(item => {
+                subtotal += item.price * item.quantity;
+                totalCost += item.cost * item.quantity;
+            });
+            
+            const profit = subtotal - totalCost;
+            
+            document.getElementById('sale-subtotal').textContent = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('sale-profit').textContent = `S/ ${profit.toFixed(2)}`;
+            document.getElementById('sale-total').textContent = `S/ ${subtotal.toFixed(2)}`;
+        }
+
+        function registerSale() {
+            if (saleCart.length === 0) {
+                alert('El carrito está vacío. Agrega productos antes de registrar la venta.');
+                return;
+            }
+            
+            try {
+                let total = 0;
+                let totalCost = 0;
+                let products = Storage.get('products') || [];
+                let sales = Storage.get('sales') || [];
+                
+                // Crear la venta
+                const sale = {
+                    id: Date.now().toString(),
+                    items: saleCart.map(item => ({
+                        productId: item.productId,
+                        name: item.name,
+                        price: item.price,
+                        cost: item.cost,
+                        quantity: item.quantity
+                    })),
+                    total: 0,
+                    cost: 0,
+                    profit: 0,
+                    date: new Date().toISOString(),
+                    type: 'products'
+                };
+                
+                // Actualizar stock y calcular totales
+                saleCart.forEach(item => {
+                    total += item.price * item.quantity;
+                    totalCost += item.cost * item.quantity;
+                    
+                    // Actualizar stock del producto
+                    const productIndex = products.findIndex(p => p.id === item.productId);
+                    if (productIndex !== -1) {
+                        products[productIndex].stock = Math.max(0, products[productIndex].stock - item.quantity);
+                    }
+                });
+                
+                sale.total = total;
+                sale.cost = totalCost;
+                sale.profit = total - totalCost;
+                
+                // Guardar datos
+                sales.push(sale);
+                Storage.set('sales', sales);
+                Storage.set('products', products);
+                
+                // Limpiar carrito
+                saleCart = [];
+                updateCartDisplay();
+                
+                alert(`Venta registrada correctamente.\nTotal: S/ ${total.toFixed(2)}\nGanancia: S/ ${sale.profit.toFixed(2)}`);
+                
+                // Actualizar vistas
+                updateHomeStats();
+            } catch (error) {
+                console.error('Error al registrar venta:', error);
+                alert('Hubo un error al registrar la venta. Por favor intenta nuevamente.');
+            }
+        }
+
+        function registerService() {
+            const description = document.getElementById('service-description').value.trim();
+            const price = parseFloat(document.getElementById('service-price').value);
+            const cost = parseFloat(document.getElementById('service-cost').value) || 0;
+            
+            if (!description || !price) {
+                alert('Por favor completa la descripción y el precio del servicio.');
+                return;
+            }
+            
+            try {
+                let sales = Storage.get('sales') || [];
+                
+                const sale = {
+                    id: Date.now().toString(),
+                    items: [{
+                        name: description,
+                        price: price,
+                        cost: cost,
+                        quantity: 1
+                    }],
+                    total: price,
+                    cost: cost,
+                    profit: price - cost,
+                    date: new Date().toISOString(),
+                    type: 'service'
+                };
+                
+                sales.push(sale);
+                Storage.set('sales', sales);
+                
+                // Limpiar formulario
+                document.getElementById('service-description').value = '';
+                document.getElementById('service-price').value = '';
+                document.getElementById('service-cost').value = '';
+                
+                alert(`Servicio registrado correctamente.\nTotal: S/ ${price.toFixed(2)}\nGanancia: S/ ${sale.profit.toFixed(2)}`);
+                
+                // Actualizar vistas
+                updateHomeStats();
+            } catch (error) {
+                console.error('Error al registrar servicio:', error);
+                alert('Hubo un error al registrar el servicio. Por favor intenta nuevamente.');
+            }
+        }
+
+        // ==================== COMPRAS ====================
+        
+        function showPurchaseForm() {
+            const form = document.getElementById('purchase-form');
+            
+            // Limpiar formulario
+            document.getElementById('purchase-supplier').value = '';
+            document.getElementById('purchase-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('purchase-product').value = '';
+            document.getElementById('purchase-quantity').value = '';
+            document.getElementById('purchase-unit-price').value = '';
+            document.getElementById('purchase-total').value = '';
+            
+            // Cargar selectores
+            updateSupplierSelect();
+            updateProductSelect();
+            
+            form.classList.remove('hidden');
+        }
+
+        function hidePurchaseForm() {
+            document.getElementById('purchase-form').classList.add('hidden');
+        }
+
+        function updatePurchaseCost() {
+            const productId = document.getElementById('purchase-product').value;
+            const products = Storage.get('products') || [];
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                document.getElementById('purchase-unit-price').value = product.cost.toFixed(2);
+                calculatePurchaseTotal();
+            }
+        }
+
+        function calculatePurchaseTotal() {
+            const quantity = parseInt(document.getElementById('purchase-quantity').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('purchase-unit-price').value) || 0;
+            const total = quantity * unitPrice;
+            
+            document.getElementById('purchase-total').value = total.toFixed(2);
+        }
+
+        function savePurchase(event) {
+            event.preventDefault();
+            
+            const supplierId = document.getElementById('purchase-supplier').value;
+            const date = document.getElementById('purchase-date').value;
+            const productId = document.getElementById('purchase-product').value;
+            const quantity = Math.max(1, parseInt(document.getElementById('purchase-quantity').value) || 0);
+            const unitPrice = Math.max(0, parseFloat(document.getElementById('purchase-unit-price').value) || 0);
+            const total = quantity * unitPrice;
+            
+            if (!productId) {
+                alert('Por favor selecciona un producto.');
+                return;
+            }
+            
+            let purchases = Storage.get('purchases') || [];
+            let products = Storage.get('products') || [];
+            
+            // Crear la compra
+            const purchase = {
+                id: Date.now().toString(),
+                supplierId,
+                date,
+                productId,
+                quantity,
+                unitPrice,
+                total,
+                createdAt: new Date().toISOString()
+            };
+            
+            purchases.push(purchase);
+            Storage.set('purchases', purchases);
+            
+            // Actualizar stock del producto
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                products[productIndex].stock += quantity;
+                // Actualizar el costo de compra si es menor
+                if (unitPrice < products[productIndex].cost) {
+                    products[productIndex].cost = unitPrice;
+                }
+            }
+            
+            Storage.set('products', products);
+            
+            hidePurchaseForm();
+            loadPurchases();
+            updateHomeStats();
+            
+            alert('Compra registrada correctamente. El inventario ha sido actualizado.');
+        }
+
+        function loadPurchases() {
+            const purchases = Storage.get('purchases') || [];
+            const products = Storage.get('products') || [];
+            const suppliers = Storage.get('suppliers') || [];
+            const list = document.getElementById('purchases-list');
+            const empty = document.getElementById('purchases-empty');
+            
+            if (purchases.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            
+            // Ordenar por fecha (más reciente primero)
+            const sortedPurchases = [...purchases].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            list.innerHTML = sortedPurchases.map(purchase => {
+                const product = products.find(p => p.id === purchase.productId);
+                const supplier = suppliers.find(s => s.id === purchase.supplierId);
+                const formattedDate = new Date(purchase.date).toLocaleDateString('es-PE');
+                
+                return `
+                    <div class="bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800 dark:text-white text-lg">${product ? product.name : 'Producto eliminado'}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${supplier ? supplier.name : 'Sin proveedor'}</p>
+                            </div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">${formattedDate}</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 text-sm">
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Cantidad</p>
+                                <p class="font-medium text-gray-800 dark:text-white">${purchase.quantity}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Precio unitario</p>
+                                <p class="font-medium text-gray-800 dark:text-white">S/ ${purchase.unitPrice.toFixed(2)}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Total</p>
+                                <p class="font-medium text-blue-600 dark:text-blue-400">S/ ${purchase.total.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== GANANCIAS Y ANÁLISIS ====================
+        
+        let currentProfitFilter = 'today';
+
+        function filterProfits(filter) {
+            currentProfitFilter = filter;
+            
+            // Actualizar botones
+            document.querySelectorAll('.profit-filter').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'dark:bg-slate-600', 'text-gray-800', 'dark:text-white');
+                
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-gray-200', 'dark:bg-slate-600', 'text-gray-800', 'dark:text-white');
+                }
+            });
+            
+            loadProfits();
+        }
+
+        function loadProfits() {
+            const sales = Storage.get('sales') || [];
+            const products = Storage.get('products') || [];
+            const purchases = Storage.get('purchases') || [];
+            const suppliers = Storage.get('suppliers') || [];
+            
+            // Filtrar ventas por período
+            const filteredSales = filterSalesByPeriod(sales, currentProfitFilter);
+            
+            // Calcular totales
+            const totalSales = filteredSales.reduce((sum, s) => sum + s.total, 0);
+            const totalProfit = filteredSales.reduce((sum, s) => sum + s.profit, 0);
+            
+            document.getElementById('profit-sales').textContent = `S/ ${totalSales.toFixed(2)}`;
+            document.getElementById('profit-profit').textContent = `S/ ${totalProfit.toFixed(2)}`;
+            
+            // Análisis de productos
+            const productStats = analyzeProductSales(filteredSales);
+            
+            // Más vendido
+            if (productStats.mostSold) {
+                document.getElementById('profit-most-sold').textContent = productStats.mostSold.name;
+                document.getElementById('profit-most-sold-qty').textContent = `${productStats.mostSold.quantity} unidades`;
+            } else {
+                document.getElementById('profit-most-sold').textContent = '-';
+                document.getElementById('profit-most-sold-qty').textContent = '0 unidades';
+            }
+            
+            // Más ganancia
+            if (productStats.mostProfit) {
+                document.getElementById('profit-most-profit').textContent = productStats.mostProfit.name;
+                document.getElementById('profit-most-profit-amount').textContent = `S/ ${productStats.mostProfit.profit.toFixed(2)}`;
+            } else {
+                document.getElementById('profit-most-profit').textContent = '-';
+                document.getElementById('profit-most-profit-amount').textContent = 'S/ 0.00';
+            }
+            
+            // Menos vendido
+            if (productStats.leastSold) {
+                document.getElementById('profit-least-sold').textContent = productStats.leastSold.name;
+                document.getElementById('profit-least-sold-qty').textContent = `${productStats.leastSold.quantity} unidades`;
+            } else {
+                document.getElementById('profit-least-sold').textContent = '-';
+                document.getElementById('profit-least-sold-qty').textContent = '0 unidades';
+            }
+            
+            // Menos ganancia
+            if (productStats.leastProfit) {
+                document.getElementById('profit-least-profit').textContent = productStats.leastProfit.name;
+                document.getElementById('profit-least-profit-amount').textContent = `S/ ${productStats.leastProfit.profit.toFixed(2)}`;
+            } else {
+                document.getElementById('profit-least-profit').textContent = '-';
+                document.getElementById('profit-least-profit-amount').textContent = 'S/ 0.00';
+            }
+            
+            // Análisis de días
+            const dayStats = analyzeDaySales(filteredSales);
+            
+            if (dayStats.bestDay) {
+                document.getElementById('profit-best-day').textContent = dayStats.bestDay.day;
+                document.getElementById('profit-best-day-amount').textContent = `S/ ${dayStats.bestDay.total.toFixed(2)}`;
+            } else {
+                document.getElementById('profit-best-day').textContent = '-';
+                document.getElementById('profit-best-day-amount').textContent = 'S/ 0.00';
+            }
+            
+            if (dayStats.worstDay) {
+                document.getElementById('profit-worst-day').textContent = dayStats.worstDay.day;
+                document.getElementById('profit-worst-day-amount').textContent = `S/ ${dayStats.worstDay.total.toFixed(2)}`;
+            } else {
+                document.getElementById('profit-worst-day').textContent = '-';
+                document.getElementById('profit-worst-day-amount').textContent = 'S/ 0.00';
+            }
+            
+            // Productos por reponer
+            loadLowStockProducts(products);
+            
+            // Ranking de proveedores
+            loadSuppliersRanking(purchases, suppliers);
+        }
+
+        function filterSalesByPeriod(sales, period) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            return sales.filter(sale => {
+                const saleDate = new Date(sale.date);
+                
+                if (period === 'today') {
+                    return saleDate.toDateString() === today.toDateString();
+                } else if (period === 'week') {
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return saleDate >= weekAgo;
+                } else if (period === 'month') {
+                    const monthAgo = new Date(today);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return saleDate >= monthAgo;
+                }
+                
+                return true;
+            });
+        }
+
+        function analyzeProductSales(sales) {
+            const productMap = {};
+            
+            sales.forEach(sale => {
+                if (!sale.items || !Array.isArray(sale.items)) return;
+                
+                sale.items.forEach(item => {
+                    if (!item || !item.name) return;
+                    
+                    if (!productMap[item.name]) {
+                        productMap[item.name] = {
+                            name: item.name,
+                            quantity: 0,
+                            profit: 0
+                        };
+                    }
+                    productMap[item.name].quantity += item.quantity || 0;
+                    productMap[item.name].profit += ((item.price || 0) - (item.cost || 0)) * (item.quantity || 0);
+                });
+            });
+            
+            const productsArray = Object.values(productMap);
+            
+            if (productsArray.length === 0) {
+                return {
+                    mostSold: null,
+                    mostProfit: null,
+                    leastSold: null,
+                    leastProfit: null
+                };
+            }
+            
+            return {
+                mostSold: productsArray.reduce((max, p) => p.quantity > max.quantity ? p : max, productsArray[0]),
+                mostProfit: productsArray.reduce((max, p) => p.profit > max.profit ? p : max, productsArray[0]),
+                leastSold: productsArray.reduce((min, p) => p.quantity < min.quantity ? p : min, productsArray[0]),
+                leastProfit: productsArray.reduce((min, p) => p.profit < min.profit ? p : min, productsArray[0])
+            };
+        }
+
+        function analyzeDaySales(sales) {
+            const dayMap = {};
+            
+            sales.forEach(sale => {
+                if (!sale || !sale.date) return;
+                
+                const dayName = new Date(sale.date).toLocaleDateString('es-PE', { weekday: 'long' });
+                const formattedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+                
+                if (!dayMap[formattedDay]) {
+                    dayMap[formattedDay] = {
+                        day: formattedDay,
+                        total: 0
+                    };
+                }
+                dayMap[formattedDay].total += sale.total || 0;
+            });
+            
+            const daysArray = Object.values(dayMap);
+            
+            if (daysArray.length === 0) {
+                return {
+                    bestDay: null,
+                    worstDay: null
+                };
+            }
+            
+            return {
+                bestDay: daysArray.reduce((max, d) => d.total > max.total ? d : max, daysArray[0]),
+                worstDay: daysArray.reduce((min, d) => d.total < min.total ? d : min, daysArray[0])
+            };
+        }
+
+        function loadLowStockProducts(products) {
+            const list = document.getElementById('low-stock-list');
+            const empty = document.getElementById('low-stock-empty');
+            
+            const lowStockProducts = products.filter(p => p.stock <= (p.minStock || 0));
+            
+            if (lowStockProducts.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            
+            list.innerHTML = lowStockProducts.map(product => {
+                const status = product.stock === 0 ? 'Agotado' : 'Pocos';
+                const statusClass = product.stock === 0 
+                    ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
+                
+                return `
+                    <div class="flex justify-between items-center bg-white dark:bg-slate-600 p-3 rounded-lg">
+                        <div>
+                            <p class="font-medium text-gray-800 dark:text-white">${product.name}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Stock: ${product.stock}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${statusClass}">${status}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadSuppliersRanking(purchases, suppliers) {
+            const list = document.getElementById('suppliers-ranking');
+            const empty = document.getElementById('suppliers-ranking-empty');
+            
+            if (purchases.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            // Calcular compras por proveedor
+            const supplierMap = {};
+            
+            purchases.forEach(purchase => {
+                if (!supplierMap[purchase.supplierId]) {
+                    supplierMap[purchase.supplierId] = {
+                        supplierId: purchase.supplierId,
+                        total: 0,
+                        count: 0
+                    };
+                }
+                supplierMap[purchase.supplierId].total += purchase.total;
+                supplierMap[purchase.supplierId].count += 1;
+            });
+            
+            const rankingArray = Object.values(supplierMap)
+                .map(item => ({
+                    ...item,
+                    name: suppliers.find(s => s.id === item.supplierId)?.name || 'Proveedor eliminado'
+                }))
+                .sort((a, b) => b.total - a.total);
+            
+            if (rankingArray.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            
+            list.innerHTML = rankingArray.slice(0, 5).map((item, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                
+                return `
+                    <div class="flex justify-between items-center bg-white dark:bg-slate-600 p-3 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg">${medal}</span>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white">${item.name}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${item.count} compras</p>
+                            </div>
+                        </div>
+                        <p class="font-bold text-blue-600 dark:text-blue-400">S/ ${item.total.toFixed(2)}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== GESTIÓN DE DATOS ====================
+        
+        function showDataModal() {
+            const modal = document.createElement('div');
+            modal.id = 'data-modal';
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Gestionar datos</h3>
+                    
+                    <div class="space-y-3 mb-6">
+                        <button onclick="exportData()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Exportar respaldo
+                        </button>
+                        
+                        <button onclick="document.getElementById('import-file').click()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Importar respaldo
+                        </button>
+                        <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
+                        
+                        <button onclick="loadSampleData()" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            Cargar datos de ejemplo
+                        </button>
+                        
+                        <button onclick="clearAllData()" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Borrar todos los datos
+                        </button>
+                    </div>
+                    
+                    <button onclick="closeDataModal()" class="w-full bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white px-4 py-2 rounded-lg font-medium transition">
+                        Cancelar
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function closeDataModal() {
+            const modal = document.getElementById('data-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function exportData() {
+            const data = {
+                products: Storage.get('products') || [],
+                suppliers: Storage.get('suppliers') || [],
+                sales: Storage.get('sales') || [],
+                purchases: Storage.get('purchases') || [],
+                theme: Storage.get('theme'),
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `bodega-respaldo-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            closeDataModal();
+            
+            alert('Respaldo exportado correctamente.');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (!confirm('¿Estás segura de que quieres importar estos datos? Se reemplazarán todos los datos actuales.')) {
+                        return;
+                    }
+                    
+                    // Importar datos
+                    if (data.products) Storage.set('products', data.products);
+                    if (data.suppliers) Storage.set('suppliers', data.suppliers);
+                    if (data.sales) Storage.set('sales', data.sales);
+                    if (data.purchases) Storage.set('purchases', data.purchases);
+                    if (data.theme) Storage.set('theme', data.theme);
+                    
+                    closeDataModal();
+                    loadTheme();
+                    updateHomeStats();
+                    
+                    alert('Datos importados correctamente.');
+                } catch (error) {
+                    alert('Error al importar datos: El archivo no es válido.');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function loadSampleData() {
+            if (!confirm('¿Estás segura de que quieres cargar datos de ejemplo? Se agregarán a tus datos actuales.')) {
+                return;
+            }
+            
+            const sampleSuppliers = [
+                { id: 'sup1', name: 'Distribuidora Lima', phone: '999 123 456', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+                { id: 'sup2', name: 'Snacks Perú', phone: '999 789 012', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+            ];
+            
+            const sampleProducts = [
+                { id: 'prod1', name: 'Chicles Menta', category: 'Chicles', cost: 0.50, price: 1.00, stock: 20, minStock: 5, supplierId: 'sup1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+                { id: 'prod2', name: 'Papas Fritas', category: 'Snacks', cost: 2.00, price: 3.50, stock: 15, minStock: 5, supplierId: 'sup2', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+                { id: 'prod3', name: 'Gaseosa 500ml', category: 'Gaseosas', cost: 1.50, price: 2.50, stock: 10, minStock: 3, supplierId: 'sup1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+                { id: 'prod4', name: 'Agua 500ml', category: 'Agua', cost: 0.80, price: 1.50, stock: 25, minStock: 10, supplierId: 'sup1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+            ];
+            
+            // Agregar sin duplicar
+            let suppliers = Storage.get('suppliers') || [];
+            let products = Storage.get('products') || [];
+            
+            sampleSuppliers.forEach(sup => {
+                if (!suppliers.find(s => s.name === sup.name)) {
+                    suppliers.push(sup);
+                }
+            });
+            
+            sampleProducts.forEach(prod => {
+                if (!products.find(p => p.name === prod.name)) {
+                    products.push(prod);
+                }
+            });
+            
+            Storage.set('suppliers', suppliers);
+            Storage.set('products', products);
+            
+            closeDataModal();
+            updateHomeStats();
+            
+            alert('Datos de ejemplo cargados correctamente.');
+        }
+
+        function clearAllData() {
+            if (!confirm('¿Estás segura de que quieres borrar TODOS los datos? Esta acción NO se puede deshacer.')) {
+                return;
+            }
+            
+            if (!confirm('¿Realmente estás segura? Se perderán todos los productos, ventas, compras y proveedores.')) {
+                return;
+            }
+            
+            localStorage.removeItem('products');
+            localStorage.removeItem('suppliers');
+            localStorage.removeItem('sales');
+            localStorage.removeItem('purchases');
+            
+            closeDataModal();
+            updateHomeStats();
+            
+            alert('Todos los datos han sido borrados.');
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Sistema de bodega iniciado');
+            
+            // Cargar tema guardado
+            loadTheme();
+            
+            // Cargar estadísticas del inicio
+            updateHomeStats();
+            
+            // Verificar que localStorage funciona
+            try {
+                Storage.set('test', 'ok');
+                if (Storage.get('test') === 'ok') {
+                    console.log('Almacenamiento local funcionando correctamente');
+                    localStorage.removeItem('test');
+                }
+            } catch (error) {
+                console.error('Error con localStorage:', error);
+                alert('Tu navegador no permite guardar datos. La aplicación no funcionará correctamente.');
+            }
+        });
+    </script>
+</body>
+</html>
